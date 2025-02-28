@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  zookeeper:
+    image: quay.io/debezium/zookeeper:latest
+    ports:
+      - 2181:2181
+      - 2888:2888
+      - 3888:3888
+    networks:
+      - monitoring
+
+  kafka:
+    image: quay.io/debezium/kafka:latest
+    ports:
+      - 9092:9092
+    environment:
+      - ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092
+      - KAFKA_MAX_REQUEST_SIZE=104857600
+      - KAFKA_MESSAGE_MAX_BYTES=104857600
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=104857600
+    networks:
+      - monitoring
+    depends_on:
+      - zookeeper
+
+  connect:
+    image: quay.io/debezium/connect:latest
+    ports:
+      - 8083:8083
+    environment:
+      - BOOTSTRAP_SERVERS=kafka:9092
+      - GROUP_ID=1
+      - CONFIG_STORAGE_TOPIC=my_connect_configs
+      - OFFSET_STORAGE_TOPIC=my_connect_offsets
+      - STATUS_STORAGE_TOPIC=my_connect_statuses
+      - CONNECT_MAX_REQUEST_SIZE=2000000
+    networks:
+      - monitoring
+    depends_on:
+      - kafka
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: elchin-kafka-ui-container
+    ports:
+      - "8080:8080"
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
+    networks:
+      - monitoring
+    depends_on:
+      - kafka
+
+  kafka-service:
+    build: .
+    ports:
+      - "8090:8090"
+    environment:
+      - SPRING_APPLICATION_NAME=kafka-service
+      - SERVER_PORT=8090
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - SPRING_KAFKA_CONSUMER_GROUP_ID=hk-group
+    networks:
+      - monitoring
+    depends_on:
+      - kafka
+
+networks:
+  monitoring:
+    driver: bridge
