@@ -11,6 +11,7 @@
         <option value="$PROJECT_DIR$/jwt-auth/pom.xml" />
         <option value="$PROJECT_DIR$/kafka-service/pom.xml" />
         <option value="$PROJECT_DIR$/weather-service/pom.xml" />
+        <option value="$PROJECT_DIR$/exchange-service/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

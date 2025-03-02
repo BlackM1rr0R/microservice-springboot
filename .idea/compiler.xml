@@ -7,28 +7,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="netflixeureka" />
-        <module name="user-service" />
-      </profile>
-      <profile name="Annotation profile for jwt-auth" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
-        </processorPath>
-        <module name="product-service" />
         <module name="jwt-auth" />
-      </profile>
-      <profile name="Annotation profile for weather-service" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
-        </processorPath>
+        <module name="exchange-service" />
         <module name="kafka-service" />
+        <module name="netflixeureka" />
+        <module name="product-service" />
+        <module name="user-service" />
         <module name="weather-service" />
       </profile>
     </annotationProcessing>
@@ -38,6 +22,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="exchange-service" options="-parameters" />
       <module name="jwt-auth" options="-parameters" />
       <module name="kafka-service" options="-parameters" />
       <module name="netflixeureka" options="-parameters" />
