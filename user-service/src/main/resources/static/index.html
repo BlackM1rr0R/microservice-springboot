@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Registration and Products</title>
+  <script>
+    function submitForm(event) {
+      event.preventDefault();
+
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const firstName = document.getElementById("firstName").value;
+      const lastName = document.getElementById("lastName").value;
+      const email = document.getElementById("email").value;
+
+
+      const userData = {
+        username: username,
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+        email: email
+      };
+
+
+      fetch('http://localhost:8081/adduser', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userData)
+      })
+              .then(response => response.json())
+              .then(data => {
+                alert('User added successfully!');
+                console.log(data);
+              })
+              .catch(error => {
+                alert('Error adding user');
+                console.error(error);
+              });
+    }
+
+    // Kullanıcı ve ürünleri almak için fetch kullanma
+    function getUserWithProducts(userId) {
+      fetch('http://localhost:8081/user/' + userId + '/products')
+              .then(response => response.json())
+              .then(data => {
+                document.getElementById('userProducts').innerText = JSON.stringify(data, null, 2);
+              })
+              .catch(error => {
+                console.error('Error fetching user products:', error);
+              });
+    }
+
+
+
+    function getAllProducts() {
+      fetch('http://localhost:8082/products')
+              .then(response => response.json())
+              .then(products => {
+                const productList = document.getElementById('productList');
+                productList.innerHTML = "";
+                products.forEach(product => {
+                  const productItem = document.createElement('li');
+                  productItem.textContent = `Product Name: ${product.name}, Description: ${product.description}, Price: ${product.price}`;
+                  productList.appendChild(productItem);
+                });
+              })
+              .catch(error => {
+                console.error('Error fetching products:', error);
+              });
+    }
+  </script>
+</head>
+<body>
+<h1>User Registration</h1>
+<form id="userForm" onsubmit="submitForm(event)">
+
+  <label for="username">Username:</label>
+  <input type="text" id="username" name="username" required>
+  <br><br>
+
+  <label for="password">Password:</label>
+  <input type="password" id="password" name="password" required>
+  <br><br>
+
+  <label for="firstName">First Name:</label>
+  <input type="text" id="firstName" name="firstName" required>
+  <br><br>
+
+  <label for="lastName">Last Name:</label>
+  <input type="text" id="lastName" name="lastName" required>
+  <br><br>
+
+  <label for="email">Email:</label>
+  <input type="email" id="email" name="email" required>
+  <br><br>
+
+  <button type="submit">Add User</button>
+</form>
+
+<br><br>
+<h2>Get User with Products</h2>
+<label for="userId">Enter User ID:</label>
+<input type="number" id="userId" name="userId">
+<button onclick="getUserWithProducts(document.getElementById('userId').value)">Get User</button>
+
+<h3 id="userProducts"></h3>
+
+<br><br>
+<h2>Get All Products</h2>
+<button onclick="getAllProducts()">Get All Products</button>
+
+<ul id="productList"></ul>
+</body>
+</html>

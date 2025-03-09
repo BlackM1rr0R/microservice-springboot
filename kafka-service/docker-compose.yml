@@ -1,74 +1,52 @@
-version: '3.8'
+version: '3'
 
 services:
   zookeeper:
-    image: quay.io/debezium/zookeeper:latest
-    ports:
-      - 2181:2181
-      - 2888:2888
-      - 3888:3888
-    networks:
-      - monitoring
-
-  kafka:
-    image: quay.io/debezium/kafka:latest
-    ports:
-      - 9092:9092
+    image: confluentinc/cp-zookeeper:latest
     environment:
-      - ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
-      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092
-      - KAFKA_MAX_REQUEST_SIZE=104857600
-      - KAFKA_MESSAGE_MAX_BYTES=104857600
-      - KAFKA_REPLICA_FETCH_MAX_BYTES=104857600
-    networks:
-      - monitoring
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+    volumes:
+      - ./pub-technology/zookeeper/data:/data
+      - ./pub-technology/zookeeper/datalog:/datalog
+
+  kafka-server-1:
+    image: confluentinc/cp-kafka:latest
     depends_on:
       - zookeeper
-
-  connect:
-    image: quay.io/debezium/connect:latest
     ports:
-      - 8083:8083
+      - 29092:29092
     environment:
-      - BOOTSTRAP_SERVERS=kafka:9092
-      - GROUP_ID=1
-      - CONFIG_STORAGE_TOPIC=my_connect_configs
-      - OFFSET_STORAGE_TOPIC=my_connect_offsets
-      - STATUS_STORAGE_TOPIC=my_connect_statuses
-      - CONNECT_MAX_REQUEST_SIZE=2000000
-    networks:
-      - monitoring
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-server-1:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes:
+      - ./pub-technology/kafka1/data:/var/lib/kafka/data
+  kafka-server-2:
+    image: confluentinc/cp-kafka:latest
     depends_on:
-      - kafka
-
-  kafka-ui:
-    image: provectuslabs/kafka-ui:latest
-    container_name: elchin-kafka-ui-container
+      - zookeeper
     ports:
-      - "8080:8080"
+      - 39092:39092
     environment:
-      - KAFKA_CLUSTERS_0_NAME=local
-      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
-    networks:
-      - monitoring
-    depends_on:
-      - kafka
-
-  kafka-service:
-    build: .
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-server-2:9092,PLAINTEXT_HOST://localhost:39092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes:
+      - ./pub-technology/kafka2/data:/var/lib/kafka/data
+  manager:
+    image: sheepkiller/kafka-manager
     ports:
-      - "8090:8090"
+      - 9000:9000
     environment:
-      - SPRING_APPLICATION_NAME=kafka-service
-      - SERVER_PORT=8090
-      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-      - SPRING_KAFKA_CONSUMER_GROUP_ID=hk-group
-    networks:
-      - monitoring
+      ZK_HOSTS: zookeeper:2181
     depends_on:
-      - kafka
-
-networks:
-  monitoring:
-    driver: bridge
+      - zookeeper

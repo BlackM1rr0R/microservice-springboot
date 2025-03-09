@@ -12,11 +12,20 @@
         <option value="$PROJECT_DIR$/kafka-service/pom.xml" />
         <option value="$PROJECT_DIR$/weather-service/pom.xml" />
         <option value="$PROJECT_DIR$/exchange-service/pom.xml" />
+        <option value="$PROJECT_DIR$/movie-service/pom.xml" />
+        <option value="$PROJECT_DIR$/category-service/pom.xml" />
+        <option value="$PROJECT_DIR$/kafka-service/subcategory-service/pom.xml" />
+        <option value="$PROJECT_DIR$/subcategory/pom.xml" />
+        <option value="$PROJECT_DIR$/api-gateway-service/pom.xml" />
+        <option value="$PROJECT_DIR$/subcategory-service/pom.xml" />
+        <option value="$PROJECT_DIR$/subcategories-service/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/kafka-service/subcategory-service/pom.xml" />
         <option value="$PROJECT_DIR$/order-service/pom.xml" />
+        <option value="$PROJECT_DIR$/subcategory-service/pom.xml" />
       </set>
     </option>
   </component>
