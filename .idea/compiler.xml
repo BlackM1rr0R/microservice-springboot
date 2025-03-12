@@ -15,15 +15,16 @@
         <module name="user-service" />
         <module name="weather-service" />
       </profile>
-      <profile name="Annotation profile for category-service" enabled="true">
+      <profile name="Annotation profile for photos-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
         </processorPath>
-        <module name="category-service" />
+        <module name="photos-service" />
+        <module name="product-service" />
+        <module name="movie-service" />
       </profile>
       <profile name="Annotation profile for subcategories-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -31,10 +32,10 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
         </processorPath>
         <module name="subcategories-service" />
-        <module name="product-service" />
-        <module name="movie-service" />
+        <module name="category-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -54,6 +55,7 @@
       <module name="movie-service" options="-parameters" />
       <module name="netflixeureka" options="-parameters" />
       <module name="order-service" options="-parameters" />
+      <module name="photos-service" options="-parameters" />
       <module name="product-service" options="-parameters" />
       <module name="subcategories-service" options="-parameters" />
       <module name="subcategory-service" options="-parameters" />

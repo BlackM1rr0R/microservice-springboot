@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Photo upload</title>
+</head>
+<body>
+<h2>Photo upload</h2>
+<form action="/image" method="post" enctype="multipart/form-data">
+    <input type="file" name="images" multiple required> <!-- multiple ekledik -->
+    <button type="submit">Upload</button>
+</form>
+
+
+<h2>Photo View</h2>
+<form onsubmit="viewImage(event)">
+    <input type="text" id="imageName" placeholder="Dosya adını gir">
+    <button type="submit">View</button>
+</form>
+
+<!-- Resmin buraya yüklenmesini sağlayacağız -->
+<h3>Image Preview:</h3>
+<div id="imageContainer"></div>
+
+<script>
+    function viewImage(event) {
+        event.preventDefault();
+        let imageName = document.getElementById("imageName").value.trim();
+        if (!imageName) {
+            alert("Lütfen bir dosya adı girin.");
+            return;
+        }
+
+        let imageContainer = document.getElementById("imageContainer");
+        imageContainer.innerHTML = ""; // Önceki resimleri temizle
+
+        fetch(`http://localhost:8089/image/info/${imageName}`)
+            .then(response => response.json())
+            .then(images => {
+                if (images.length === 0) {
+                    alert("Resim bulunamadı.");
+                    return;
+                }
+
+                images.forEach(image => {
+                    let imgElement = document.createElement("img");
+                    imgElement.src = `data:${image.type};base64,${image.imageData}`;
+                    imgElement.style.width = "300px";
+                    imgElement.style.margin = "10px";
+                    imageContainer.appendChild(imgElement);
+                });
+            })
+            .catch(error => console.error("Resim yüklenirken hata oluştu:", error));
+    }
+
+</script>
+
+</body>
+</html>
